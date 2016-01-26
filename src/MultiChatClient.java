@@ -9,7 +9,7 @@ public class MultiChatClient {
 	private Client client;
 
 	public MultiChatClient() {
-		client = new Client();
+		Client.getInstance();
 	}
 
 }
@@ -18,11 +18,11 @@ class ClientReceiver extends Thread {
 	Socket socket;
 	DataInputStream input;
 	ObjectInputStream inputuser;
-	ChattingGui chattingGui;
+	MainGui mainGui;
 	
-	public ClientReceiver(Socket socket, ChattingGui chattingGui) {
+	public ClientReceiver(Socket socket, MainGui mainGui) {
 		this.socket = socket;
-		this.chattingGui = chattingGui;
+		this.mainGui = mainGui;
 		try {
 			input = new DataInputStream(socket.getInputStream());
 		} catch (IOException e) {
@@ -36,20 +36,24 @@ class ClientReceiver extends Thread {
 
 		while (true) {
 			try {
-				String str = input.readUTF();
-				if (str.startsWith("[")) {
-					chattingGui.getListModel().clear();
-					String[] arr = null;
-
-					str = str.replaceAll("\\[", "");
-					str = str.replaceAll("\\]", "");
-					arr = str.split(",");
-
-					for (int i = 0; i < arr.length; i++)
-						chattingGui.getListModel().addElement(arr[i].trim());
-
-				} else
-					chattingGui.getTxtRoomChat().append(str);
+				
+				Parser parser = new Parser(mainGui,input.readUTF());
+				
+				
+//				String str = input.readUTF();
+//				if (str.startsWith("[")) {
+//					mainGui.getListModel().clear();
+//					String[] arr = null;
+//
+//					str = str.replaceAll("\\[", "");
+//					str = str.replaceAll("\\]", "");
+//					arr = str.split(",");
+//
+//					for (int i = 0; i < arr.length; i++)
+//						mainGui.getListModel().addElement(arr[i].trim());
+//
+//				} else
+//					mainGui.getTxtRoomChat().append(str);
 
 			} catch (IOException e) {
 
@@ -62,48 +66,62 @@ class ClientReceiver extends Thread {
 class ClientSender {
 	Socket socket;
 	DataOutputStream output= null;
+	MainGui mainGui;
 	ChattingGui chattingGui;
 
-	public ClientSender(ChattingGui chattingGui) {
-		this.socket = chattingGui.getSocket();
-		this.chattingGui = chattingGui;
+	public ClientSender(MainGui mainGui) {
+		
+		this.mainGui = mainGui;
 
 	}
+	
+	public ClientSender(ChattingGui chattingGui){
+		this.chattingGui = chattingGui;
+	}
 
-	public void sendMsg() {
+	public void sendMsg(String message) {
 
-		String msg = "";
+		this.socket = Client.getInstance().getSocket();
+		
+		String msg = message;
 		try {
 			output = new DataOutputStream(socket.getOutputStream());
+			output.writeUTF(msg);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
-		if (chattingGui.isFirst == true) {
+		
+		
+		
+		
+//		if (mainGui.isFirst == true) {
+//
+//			try {
+//				output.writeUTF(msg);
+////				output.writeUTF(mainGui.getStartGui().field.getText().toString());
+//				System.out.println("대화방에 입장하였습니다.");
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//
+//		} else {
+//			try {
+//
+////				msg = mainGui.getTxtRoomChatWrite().getText().toString();
+//				if (msg.equals("exit")) {
+//					mainGui.getListModel().removeElement(mainGui.getStartGui().field.getText().toString());
+//					System.exit(0);
+//				} else
+//					output.writeUTF(msg);
+////					output.writeUTF("(" + mainGui.getStartGui().field.getText().toString() + ")" + msg + "\n");
+//			} catch (IOException e) {
+//
+//			}
 
-			try {
-				output.writeUTF(chattingGui.getStartGui().field.getText().toString());
-				System.out.println("대화방에 입장하였습니다.");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		} else {
-			try {
-
-				msg = chattingGui.getTxtRoomChatWrite().getText().toString();
-				if (msg.equals("exit")) {
-					chattingGui.getListModel().removeElement(chattingGui.getStartGui().field.getText().toString());
-					System.exit(0);
-				} else
-					output.writeUTF("(" + chattingGui.getStartGui().field.getText().toString() + ")" + msg + "\n");
-			} catch (IOException e) {
-
-			}
-
-		}
+//		}
 
 	}
 }

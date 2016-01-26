@@ -12,14 +12,14 @@ public class StartGui {
 	private JButton btn;
 
 	static JTextField field;
-	ChattingGui chattingGui;
+	MainGui mainGui;
 	ClientSender clientSender;
 	private ButtonEvent buttonEvent;
 	private Controller controller;
 
-	public StartGui(ClientSender clientSender, ChattingGui chattingGui) {
+	public StartGui(ClientSender clientSender, MainGui mainGui) {
 		this.clientSender = clientSender;
-		this.chattingGui = chattingGui;
+		this.mainGui = mainGui;
 
 		frame = new JFrame("√§∆√√¢");
 		frame.setLocation(300, 300);
@@ -40,7 +40,7 @@ public class StartGui {
 		frame.add(btn);
 
 	
-		controller = new Controller(chattingGui);
+		controller = new Controller(mainGui);
 		btn.addActionListener(controller);
 
 		frame.setVisible(true);
@@ -67,12 +67,12 @@ public class StartGui {
 		this.field = field;
 	}
 
-	public ChattingGui getChattingGui() {
-		return chattingGui;
+	public MainGui getmainGui() {
+		return mainGui;
 	}
 
-	public void setChattingGui(ChattingGui chattingGui) {
-		this.chattingGui = chattingGui;
+	public void setmainGui(MainGui mainGui) {
+		this.mainGui = mainGui;
 	}
 
 }

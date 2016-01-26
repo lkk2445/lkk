@@ -14,10 +14,8 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
-public class ChattingGui {
+public class MainGui {
 
 	private JFrame frame;
 	private JButton btnRoomChatSend;
@@ -41,15 +39,13 @@ public class ChattingGui {
 	private Controller controller;
 	private CreateRoom createRoom;
 
-	public ChattingGui() {
-		Client.getInstance().getSocket();
-		
-		
-		this.socket = Client.getInstance().getSocket();
-		clientSender = new ClientSender(this);
+	public MainGui(Socket socket) {
+		this.socket = socket;
 		clientSender = new ClientSender(this);
 
-	
+		createRoom = new CreateRoom(clientSender,this);
+		roomList = new RoomList(this);
+		startGui = new StartGui(clientSender, this);
 
 		frame = new JFrame("√§∆√√¢");
 		frame.setBounds(600, 100, 530, 464);
@@ -93,19 +89,8 @@ public class ChattingGui {
 
 		controller = new Controller(this);
 		btnRoomChatSend.addActionListener(controller);
-		
-		
-//		list.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
-//	        public void valueChanged(ListSelectionEvent event) {
-//	            // do some actions here, for example
-//	            // print first column value from selected row
-//	            System.out.println(list.getSelectedIndex());
-//	        }
-//	    });
-		
-		
 
-		 frame.setVisible(true);
+		// frame.setVisible(true);
 
 	}
 
